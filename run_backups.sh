@@ -1,29 +1,59 @@
 #!/bin/bash
 
 ###################################################################################################################################################################################
-#Backup databases for each site to disk
+#Backup databases for PostgreSQL and MySQL/MariaDB
 
-DATABASES=$(mysql -Be "show databases" | grep -vE '^Database$|^(information|performance)_schema$')
 BACKUPDEST=/opt/backups/database_dumps
-DBCONF=/root/.my.cnf
 
-dumpdb ()
+dumpdb_mysql ()
 {
 	DB=$1
-	if (mysqldump --defaults-file=$DBCONF --force --opt --databases $DB > $BACKUPDEST/$DB.sql 2>/dev/null); then
-		echo "Successfully backed up $DB to $BACKUPDEST"
+	CONF=$2
+
+	if (mysqldump --defaults-file=$CONF --force --opt --databases $DB > $BACKUPDEST/MySQL/$DB.sql 2>/dev/null); then
+		echo "Successfully backed up $DB to $BACKUPDEST/MySQL"
                 ls -blarth "$BACKUPDEST/$DB.sql"
         else
-                echo "Failed to back up $DB to $BACKUPDEST"
+                echo "Failed to back up $DB to $BACKUPDEST/MySQL"
+        fi
+}
+
+dumpdb_postgresql ()
+{
+	DB=$1
+	if (su - postgres -c "pg_dump $DB" > $BACKUPDEST/PostgreSQL/$DB.sql 2>/dev/null); then
+		echo "Successfully backed up $DB to $BACKUPDEST/PostgreSQL"
+                ls -blarth "$BACKUPDEST/$DB.sql"
+        else
+                echo "Failed to back up $DB to $BACKUPDEST/PostgreSQL"
         fi
 }
 
 #Backup each database
-for i in $DATABASES; do
-	echo "Working on '$i'..."
-	dumpdb $i
-	echo
-done
+if ! hash "postgres" >/dev/null 2>&1; then
+	echo "Postgres is not installed. Skipping PostgreSQL backups..."
+else
+	echo "Starting backups for PostgreSQL..."
+	DATABASES_POSTGRESQL=$(su - postgres -c "psql -q -t -c 'SELECT datname from pg_database'" | sed '/^$/d' | grep -v template0)
+	for i in $DATABASES_POSTGRESQL; do
+        	echo "Working on '$i'..."
+        	dumpdb_postgresql $i
+        	echo
+	done
+fi
+
+if ! hash "mysql" >/dev/null 2>&1; then
+        echo "MySQL/MariaDB is not installed. Skipping MySQL backups..."
+else
+	echo "Starting backups for MySQL/MariaDB..."
+        DATABASES_MYSQL=$(mysql -Be "show databases" | grep -vE '^Database$|^(information|performance)_schema$')
+	DBCONF_MYSQL=/root/.my.cnf
+	for i in $DATABASES_MYSQL; do
+                echo "Working on '$i'..."
+                dumpdb_mysql $i $DBCONF_MYSQL
+                echo
+        done
+fi
 
 ###################################################################################################################################################################################
 #Send backups to TarSnap
