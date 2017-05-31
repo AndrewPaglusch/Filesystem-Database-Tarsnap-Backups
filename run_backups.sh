@@ -12,7 +12,7 @@ dumpdb_mysql ()
 
 	if (mysqldump --defaults-file=$CONF --force --opt --databases $DB > $BACKUPDEST/MySQL/$DB.sql 2>/dev/null); then
 		echo "Successfully backed up $DB to $BACKUPDEST/MySQL"
-                ls -blarth "$BACKUPDEST/$DB.sql"
+                ls -blarth "$BACKUPDEST/MySQL/$DB.sql"
         else
                 echo "Failed to back up $DB to $BACKUPDEST/MySQL"
         fi
@@ -23,13 +23,12 @@ dumpdb_postgresql ()
 	DB=$1
 	if (su - postgres -c "pg_dump $DB" > $BACKUPDEST/PostgreSQL/$DB.sql 2>/dev/null); then
 		echo "Successfully backed up $DB to $BACKUPDEST/PostgreSQL"
-                ls -blarth "$BACKUPDEST/$DB.sql"
+                ls -blarth "$BACKUPDEST/MySQL/$DB.sql"
         else
                 echo "Failed to back up $DB to $BACKUPDEST/PostgreSQL"
         fi
 }
 
-#Backup each database
 if ! hash "postgres" >/dev/null 2>&1; then
 	echo "Postgres is not installed. Skipping PostgreSQL backups..."
 else
@@ -53,6 +52,11 @@ else
                 dumpdb_mysql $i $DBCONF_MYSQL
                 echo
         done
+fi
+
+if ! hash "tarsnap" >/dev/null 2>&1; then
+        echo "Tarsnap is not installed. Exiting."
+	exit 1
 fi
 
 ###################################################################################################################################################################################
