@@ -23,7 +23,7 @@ dumpdb_postgresql ()
 	DB=$1
 	if (su - postgres -c "pg_dump $DB" > $BACKUPDEST/PostgreSQL/$DB.sql 2>/dev/null); then
 		echo "Successfully backed up $DB to $BACKUPDEST/PostgreSQL"
-                ls -blarth "$BACKUPDEST/MySQL/$DB.sql"
+                ls -blarth "$BACKUPDEST/PostgreSQL/$DB.sql"
         else
                 echo "Failed to back up $DB to $BACKUPDEST/PostgreSQL"
         fi
