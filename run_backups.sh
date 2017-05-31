@@ -35,18 +35,7 @@ done
 HOSTNAME="web03"
 
 # Directories to backup
-DIRS="
-/var/www
-/opt/backups/database_dumps
-/etc/nginx
-/etc/php-fpm.d
-/etc/php-fpm.conf
-/home
-/etc/passwd
-/etc/shadow
-/etc/group
-/etc/fstab
-"
+DIRS=$(cat filelist.txt)
 
 # Number of daily backups to keep
 DAILY=7

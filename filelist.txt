@@ -1,0 +1,10 @@
+/var/www
+/opt/backups/database_dumps
+/etc/nginx
+/etc/php-fpm.d
+/etc/php-fpm.conf
+/home
+/etc/passwd
+/etc/shadow
+/etc/group
+/etc/fstab
