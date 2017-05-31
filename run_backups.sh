@@ -32,6 +32,10 @@ dumpdb_postgresql ()
 #Make sure the needed directories exist
 mkdir -p $BACKUPDEST/{MySQL,PostgreSQL}
 
+#Make sure the filelist is in place. If not, create it
+if ! [ -f filelist.txt ]; then
+	echo "Missing/Empty 'filelist.txt' file. Continuing with database backups only"
+fi
 
 if ! hash "postgres" >/dev/null 2>&1; then
 	echo "Postgres is not installed. Skipping PostgreSQL backups..."
@@ -70,10 +74,11 @@ fi
 # Written by Tim Bishop, 2009 - http://www.bishnet.net/tim/blog/2009/01/28/automating-tarsnap-backups/
 
 # Prepend this to name of each backup
-HOSTNAME="web03"
+# This will get web01 from a hostname of web01.bla.bla.bla.com
+HOSTNAME=$(hostname | cut -d'.' -f1)
 
-# Directories to backup
-DIRS=$(cat filelist.txt)
+# Directories to backup (sed strips comments and blank lines)
+DIRS=$(sed -e '/\s*#.*$/d' -e '/^\s*$/d' filelist.txt)
 
 # Number of daily backups to keep
 DAILY=7
