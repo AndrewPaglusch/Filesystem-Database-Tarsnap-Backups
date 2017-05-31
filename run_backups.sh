@@ -29,6 +29,10 @@ dumpdb_postgresql ()
         fi
 }
 
+#Make sure the needed directories exist
+mkdir -p $BACKUPDEST/{MySQL,PostgreSQL}
+
+
 if ! hash "postgres" >/dev/null 2>&1; then
 	echo "Postgres is not installed. Skipping PostgreSQL backups..."
 else
