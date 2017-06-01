@@ -1,0 +1,23 @@
+#Websites
+/var/www
+
+#Databases
+/opt/backups/database_dumps
+
+#Nginx/PHP-FPM config
+/etc/nginx
+/etc/php-fpm.d
+/etc/php-fpm.conf
+
+#Apache config
+/etc/httpd
+
+#Home directories
+/home
+/root
+
+#OS files
+/etc/passwd
+/etc/shadow
+/etc/group
+/etc/fstab
