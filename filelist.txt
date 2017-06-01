@@ -4,10 +4,19 @@
 #Databases
 /opt/backups/database_dumps
 
+#Database configs
+/var/lib/pgsql/9.4/data/pg_hba.conf
+/etc/my.cnf
+/etc/my.cnf.d
+
 #Nginx/PHP-FPM config
 /etc/nginx
 /etc/php-fpm.d
 /etc/php-fpm.conf
+
+#PHP Config
+php.ini
+php.d
 
 #Apache config
 /etc/httpd
@@ -16,8 +25,9 @@
 /home
 /root
 
-#OS files
+#OS Config
 /etc/passwd
 /etc/shadow
 /etc/group
 /etc/fstab
+/etc/ssh/sshd_config
