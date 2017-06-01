@@ -15,8 +15,8 @@
 /etc/php-fpm.conf
 
 #PHP Config
-php.ini
-php.d
+/etc/php.ini
+/etc/php.d
 
 #Apache config
 /etc/httpd

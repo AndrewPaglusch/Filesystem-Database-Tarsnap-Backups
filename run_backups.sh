@@ -7,8 +7,8 @@ BACKUPDEST=/opt/backups/database_dumps
 
 dumpdb_mysql ()
 {
-	DB=$1
-	CONF=$2
+	local DB=$1
+	local CONF=$2
 
 	if (mysqldump --defaults-file=$CONF --force --opt --databases $DB > $BACKUPDEST/MySQL/$DB.sql 2>/dev/null); then
 		echo "Successfully backed up $DB to $BACKUPDEST/MySQL"
@@ -20,7 +20,7 @@ dumpdb_mysql ()
 
 dumpdb_postgresql ()
 {
-	DB=$1
+	local DB=$1
 	if (su - postgres -c "pg_dump $DB" > $BACKUPDEST/PostgreSQL/$DB.sql 2>/dev/null); then
 		echo "Successfully backed up $DB to $BACKUPDEST/PostgreSQL"
                 ls -blarth "$BACKUPDEST/PostgreSQL/$DB.sql"
@@ -78,7 +78,21 @@ fi
 HOSTNAME=$(hostname | cut -d'.' -f1)
 
 # Directories to backup (sed strips comments and blank lines)
-DIRS=$(sed -e '/\s*#.*$/d' -e '/^\s*$/d' filelist.txt)
+# Checks each file/dir to make sure it exists first
+function check_exist()
+{
+        if [ -f "$1" ]; then return 0; fi
+        if [ -d "$1" ]; then return 0; fi
+        return 1
+}
+
+FILELIST=$(sed -e '/\s*#.*$/d' -e '/^\s*$/d' filelist.txt)
+
+DIRS=""
+
+for i in $FILELIST; do
+        if check_exist "$i"; then DIRS+=" $i"; fi
+done
 
 # Number of daily backups to keep
 DAILY=7
