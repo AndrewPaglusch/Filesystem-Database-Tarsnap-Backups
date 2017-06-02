@@ -8,6 +8,21 @@ BACKUPDEST=/opt/backups/database_dumps
 # Path to tarsnap
 TARSNAP="/usr/local/bin/tarsnap"
 
+install_tarsnap ()
+{
+	TEMPDIR=$(mktemp -d)
+	echo $TEMPDIR
+	wget -O $TEMPDIR/tarsnap.tgz https://www.tarsnap.com/download/tarsnap-autoconf-1.0.37.tgz
+	tar -xvf $TEMPDIR/tarsnap.tgz -C $TEMPDIR
+	(cd $TEMPDIR/tarsnap-autoconf-* && ./configure)
+	(cd $TEMPDIR/tarsnap-autoconf-* && make install clean)
+	tarsnap --version
+	rm -rf $TEMPDIR
+	mv /usr/local/etc/tarsnap.conf.sample /usr/local/etc/tarsnap.conf
+	sed -i "s|keyfile\ \/root\/tarsnap.key|keyfile\ \/opt\/backups\/tarsnap.key|g" /usr/local/etc/tarsnap.conf
+	tarsnap-keygen --keyfile /opt/backups/tarsnap.key --user admin@bopag.com --machine $(hostname)
+}
+
 dumpdb_mysql ()
 {
 	local DB=$1
@@ -66,8 +81,15 @@ else
 fi
 
 if ! [ -f $TARSNAP ]; then
-        echo "Tarsnap is not installed. Exiting."
-	exit 1
+        echo "Tarsnap is not installed"
+	read -p "Would you like to install TarSnap? (Y/N)" choice
+	case "$choice" in 
+ 		y|Y ) install_tarsnap ;;
+		n|N ) echo "Exiting..."; exit 1;;
+  		* ) echo "Invalid response. Exiting..."; exit 1;;
+	esac
+	
+	if ! [ -f $TARSNAP ]; then echo "TarSnap install failed. Exiting.."; exit 1; fi
 fi
 
 ###################################################################################################################################################################################
@@ -92,7 +114,6 @@ function check_exist()
 FILELIST=$(sed -e '/\s*#.*$/d' -e '/^\s*$/d' filelist.txt)
 
 DIRS=""
-
 for i in $FILELIST; do
         if check_exist "$i"; then DIRS+=" $i"; fi
 done
