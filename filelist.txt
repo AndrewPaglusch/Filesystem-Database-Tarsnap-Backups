@@ -1,6 +1,9 @@
 #Websites
 /var/www
 
+#Applications
+/opt
+
 #Databases
 /opt/backups/database_dumps
 
