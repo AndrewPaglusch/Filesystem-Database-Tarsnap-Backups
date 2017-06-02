@@ -117,15 +117,15 @@ MONTHLY_DAY=01
 # end of config
 
 # day of week: 1-7, monday = 1
-DOW=`date +%u`
+DOW=$(date +%u)
 # day of month: 01-31
-DOM=`date +%d`
+DOM=$(date +%d)
 # month of year: 01-12
-MOY=`date +%m`
+MOY=$(date +%m)
 # year
-YEAR=`date +%Y`
+YEAR=$(date +%Y)
 # time
-TIME=`date +%H%M%S`
+TIME=$(date +%H%M%S)
 
 # Backup name
 if [ X"$DOM" = X"$MONTHLY_DAY" ]; then
