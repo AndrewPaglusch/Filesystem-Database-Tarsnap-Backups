@@ -10,6 +10,7 @@ TARSNAP="/usr/local/bin/tarsnap"
 
 install_tarsnap ()
 {
+	yum -y install gcc e2fsprogs-devel zlib-devel openssl-devel wget
 	TEMPDIR=$(mktemp -d)
 	echo $TEMPDIR
 	wget -O $TEMPDIR/tarsnap.tgz https://www.tarsnap.com/download/tarsnap-autoconf-1.0.37.tgz
