@@ -81,8 +81,9 @@ else
 fi
 
 if ! [ -f $TARSNAP ]; then
-        echo "Tarsnap is not installed"
-	read -p "Would you like to install TarSnap? (Y/N)" choice
+        echo "Tarsnap is not installed. Would you like to install TarSnap?"
+        echo "You must ALREADY have an account created at tarsnap.com to proceed."
+	read -p "Install? (Y/N): " choice
 	case "$choice" in 
  		y|Y ) install_tarsnap ;;
 		n|N ) echo "Exiting..."; exit 1;;
