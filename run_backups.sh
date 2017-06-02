@@ -37,7 +37,7 @@ mkdir -p $BACKUPDEST/{MySQL,PostgreSQL}
 
 #Make sure the filelist is in place. If not, create it
 if ! [ -f filelist.txt ]; then
-	echo "Missing/Empty 'filelist.txt' file. Continuing with database backups only"
+	echo "Missing/Empty 'filelist.txt' file. Continuing with Local database backups only. No off-site backups"
 fi
 
 if ! hash "postgres" >/dev/null 2>&1; then
@@ -56,13 +56,13 @@ if ! hash "mysql" >/dev/null 2>&1; then
         echo "MySQL/MariaDB is not installed. Skipping MySQL backups..."
 else
 	echo "Starting backups for MySQL/MariaDB..."
-        DATABASES_MYSQL=$(mysql -Be "show databases" | grep -vE '^Database$|^(information|performance)_schema$')
+	DATABASES_MYSQL=$(mysql -Be "show databases" | grep -vE '^Database$|^(information|performance)_schema$')
 	DBCONF_MYSQL=/root/.my.cnf
 	for i in $DATABASES_MYSQL; do
                 echo "Working on '$i'..."
                 dumpdb_mysql $i $DBCONF_MYSQL
                 echo
-        done
+	done
 fi
 
 if ! [ -f $TARSNAP ]; then
