@@ -5,6 +5,9 @@
 
 BACKUPDEST=/opt/backups/database_dumps
 
+# Path to tarsnap
+TARSNAP="/usr/local/bin/tarsnap"
+
 dumpdb_mysql ()
 {
 	local DB=$1
@@ -62,7 +65,7 @@ else
         done
 fi
 
-if ! hash "tarsnap" >/dev/null 2>&1; then
+if ! [ -f $TARSNAP ]; then
         echo "Tarsnap is not installed. Exiting."
 	exit 1
 fi
@@ -110,9 +113,6 @@ MONTHLY=3
 # Which day to do monthly backups on
 # 01-31 (leading 0 is important)
 MONTHLY_DAY=01
-
-# Path to tarsnap
-TARSNAP="/usr/local/bin/tarsnap"
 
 # end of config
 
