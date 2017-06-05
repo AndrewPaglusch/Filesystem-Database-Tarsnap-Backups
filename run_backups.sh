@@ -4,6 +4,7 @@
 #Backup databases for PostgreSQL and MySQL/MariaDB
 
 BACKUPDEST=/opt/backups/database_dumps
+FILELIST=/opt/backups/filelist.txt
 
 # Path to tarsnap
 TARSNAP="/usr/local/bin/tarsnap"
@@ -52,7 +53,7 @@ dumpdb_postgresql ()
 mkdir -p $BACKUPDEST/{MySQL,PostgreSQL}
 
 #Make sure the filelist is in place. If not, create it
-if ! [ -f filelist.txt ]; then
+if ! [ -f $FILELIST ]; then
 	echo "Missing/Empty 'filelist.txt' file. Continuing with Local database backups only. No off-site backups"
 fi
 
@@ -113,10 +114,10 @@ function check_exist()
         return 1
 }
 
-FILELIST=$(sed -e '/\s*#.*$/d' -e '/^\s*$/d' filelist.txt)
+FILELISTCONTENTS=$(sed -e '/\s*#.*$/d' -e '/^\s*$/d' $FILELIST)
 
 DIRS=""
-for i in $FILELIST; do
+for i in $FILELISTCONTENTS; do
         if check_exist "$i"; then DIRS+=" $i"; fi
 done
 
