@@ -57,16 +57,16 @@ if ! [ -f $FILELIST ]; then
 	echo "Missing/Empty 'filelist.txt' file. Continuing with Local database backups only. No off-site backups"
 fi
 
-if ! hash "postgres" >/dev/null 2>&1; then
-	echo "Postgres is not installed. Skipping PostgreSQL backups..."
+if ! $(su - postgres -c "hash postgres 2>/dev/null"); then
+        echo "Postgres is not installed. Skipping PostgreSQL backups..."
 else
-	echo "Starting backups for PostgreSQL..."
-	DATABASES_POSTGRESQL=$(su - postgres -c "psql -q -t -c 'SELECT datname from pg_database'" | sed '/^$/d' | grep -v template0)
-	for i in $DATABASES_POSTGRESQL; do
-        	echo "Working on '$i'..."
-        	dumpdb_postgresql $i
-        	echo
-	done
+        echo "Starting backups for PostgreSQL..."
+        DATABASES_POSTGRESQL=$(su - postgres -c "psql -q -t -c 'SELECT datname from pg_database'" | sed '/^$/d' | grep -v template0)
+        for i in $DATABASES_POSTGRESQL; do
+                echo "Working on '$i'..."
+                dumpdb_postgresql $i
+                echo
+        done
 fi
 
 if ! hash "mysql" >/dev/null 2>&1; then
