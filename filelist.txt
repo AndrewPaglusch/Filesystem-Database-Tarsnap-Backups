@@ -12,6 +12,9 @@
 /etc/my.cnf
 /etc/my.cnf.d
 
+#Lets Encrypt
+/etc/letsencrypt
+
 #Nginx/PHP-FPM config
 /etc/nginx
 /etc/php-fpm.d
