@@ -24,6 +24,10 @@
 /etc/php.ini
 /etc/php.d
 
+#Zabbix config
+/usr/share/zabbix
+/etc/zabbix
+
 #Apache config
 /etc/httpd
 
