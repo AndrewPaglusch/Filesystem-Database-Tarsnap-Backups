@@ -22,7 +22,7 @@ install_tarsnap ()
 	rm -rf $TEMPDIR
 	mv /usr/local/etc/tarsnap.conf.sample /usr/local/etc/tarsnap.conf
 	sed -i "s|keyfile\ \/root\/tarsnap.key|keyfile\ \/opt\/backups\/tarsnap.key|g" /usr/local/etc/tarsnap.conf
-	tarsnap-keygen --keyfile /opt/backups/tarsnap.key --user admin@bopag.com --machine $(hostname)
+	tarsnap-keygen --keyfile /opt/backups/tarsnap.key --user <<YOUR_TARSNAP_EMAIL_HERE>> --machine $(hostname)
 }
 
 dumpdb_mysql ()
